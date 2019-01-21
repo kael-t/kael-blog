@@ -1,14 +1,4 @@
-import Vuex from 'vuex'
-import state from './state'
-import getters from './getters'
-import mutations from './mutations'
-import actions from './actions'
-
-export default () => {
-  return new Vuex.Store({
-    state,
-    getters,
-    mutations,
-    actions
-  })
+export const actions = {
+  // 全局服务初始化
+  nuxtServerInit(store, { req, params, route }) {}
 }
