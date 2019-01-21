@@ -1,5 +1,5 @@
-const BloggerService = require('../services').bloggerService
-const resUtils = require('../utils/response.utils')
+const BloggerService = require('../services').BloggerService;
+const resUtils = require('../utils/response.utils');
 
 const BloggerContoller = {
   // 获取博主信息
@@ -9,9 +9,9 @@ const BloggerContoller = {
     })
   },
   // 设置博主信息
-  setBloggerInfo (req, res, next) {
+  updateBloggerInfo (req, res, next) {
     let data = req.body
-    BloggerService.setBloggerInfo(data).then(() => {
+    BloggerService.updateBloggerInfo(data).then(() => {
       return res.json(resUtils.dealSuccess(null, '设置博主信息成功'))
     })
   }

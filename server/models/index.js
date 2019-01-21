@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
-const config = require('../../config').databaseConfig;
+const config = require('../config').databaseConfig;
 const sequelize = new Sequelize(config.database, config.username, config.password, config.options);
 let db = {}
 
@@ -25,7 +25,7 @@ Object.keys(db).forEach(modelName => {
 /* 开发环境下初始化数据 */
 if (process.env.NODE_ENV === 'development') {
   sequelize.sync({
-  // force: true
+    // force: true
   }).then(() => {
     db.blogger.findOrCreate({
       where: { id: 1 }

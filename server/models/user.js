@@ -1,12 +1,34 @@
 module.exports = (sequelize, DataTypes) => {
-  const Blogger = sequelize.define('blogger', {
+  const User = sequelize.define('user', {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
+    // 账号
+    account: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true
+    },
+    // 密码
+    password: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    // 是否为githuber
+    isGithuber: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     // 姓名
     name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    // 昵称
+    nickname: {
       type: DataTypes.STRING,
       allowNull: true,
     },
@@ -15,35 +37,25 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // qq
-    qq: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // 微博
-    weibo: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    // 关于我
-    aboutMe: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      field: 'about_me'
-    },
     // 格言
     motto: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    // github
-    github: {
+    // 邮箱
+    email: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: false,
+    },
+    // 权限等级
+    priv: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     paranoid: true,
     underscored: true
   });
-  return Blogger;
+  return User;
 };
