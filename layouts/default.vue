@@ -1,244 +1,123 @@
 <template>
-  <div class="g-container">
-    <div class="left-col">
-      <div class="self-introduce">
-        <div class="profile-pic">
-          <img :src="headSrc" alt="">
-        </div>
-        <div class="self-info">
-          <h3>{{name}}</h3>
-          <h5>{{personalizedSignature}}</h5>
-        </div>
-        <nav class="main-nav">
-          <ul class="nav-list">
-            <router-link tag="li" to="/" class="nav-item" :class="{'nav-item-active': $route.path==('/' || '/index')}">
-              <i class="iconfont icon-index"></i>首页
-            </router-link>
-            <router-link tag="li" to="/picture" class="nav-item" :class="{'nav-item-active': $route.path=='/picture'}">
-              <i class="iconfont icon-picture"></i>照片
-            </router-link>
-            <router-link tag="li" to="/article" class="nav-item" :class="{'nav-item-active': $route.path=='/article' || $route.path.indexOf('/articleDetail') > -1}">
-              <i class="iconfont icon-article2"></i>文章
-            </router-link>
-          </ul>
-        </nav>
-        <section class="about-me-wrap">
-          <h4><i class="iconfont icon-about-me"></i>关于我</h4>
-          <p v-html="aboutMe">
-            <!--坐标:guangzhou<br>-->
-            <!--目前还是个本科狗<br>-->
-            <!--有个很好的女朋友,希望未来能好好的<br>-->
-            <!--喜欢小猫小狗但是偏偏女朋友害怕<br>-->
-            <!--前端菜鸡一个<br>-->
-            <!--想减肥(但是停留在想的阶段)-->
-          </p>
-          <ul class="my-connection-list">
-            <li id="qq" class="my-connection-item">
-              <i class="nav-icon iconfont icon-qq"></i>
-              <span class="nav-icon-label">{{qq}}</span><br>
-            </li>
-            <li id="weibo" class="my-connection-item" @click="openWeibo()">
-              <i class="nav-icon iconfont icon-weibo"></i>
-              <span class="nav-icon-label">{{weibo}}</span>
-            </li>
-          </ul>
-        </section>
+  <el-row class="g-container default-wrapper">
+    <el-col :span="5" class="left-col">
+      <div class="profile-pic">
+        <img :src="avatar" alt="">
       </div>
-    </div>
-    <div class="main-col-wrap">
-      <nuxt />
-    </div>
-    <!-- 悬浮按钮 -->
-    <div class="float-ele float-btn" :class="{close: navBtnToggleFlag}" @click="navBtnToggle()">
-      <span class="btn-line"></span>
-      <span class="btn-line"></span>
-      <span class="btn-line"></span>
-    </div>
-    <!-- 悬浮导航栏 -->
-    <div class="float-ele float-menu" :class="{showing: navBtnToggleFlag}">
-      <ul>
-        <template v-if="loginFlag">
-          <li @click="signout()"><i class="iconfont icon-signout"></i>退出登录</li>
-        </template>
-        <template v-if="!loginFlag">
-          <li @click="signin()"><i class="iconfont icon-signin"></i>登录</li>
-          <li @click="signup()"><i class="iconfont icon-signup"></i>注册</li>
-        </template>
+      <div class="self-info">
+        <h3>{{ name }}</h3>
+        <h5>{{ motto }}</h5>
+      </div>
+      <ul class="nav-list">
+        <router-link tag="li" to="/" class="nav-item" :class="{'nav-item-active': $route.path==('/' || '/index')}">
+          <i class="iconfont icon-index"></i>首页
+        </router-link>
+        <router-link tag="li" to="/picture" class="nav-item" :class="{'nav-item-active': $route.path=='/picture'}">
+          <i class="iconfont icon-picture"></i>照片
+        </router-link>
+        <router-link tag="li" to="/article" class="nav-item" :class="{'nav-item-active': $route.path=='/article' || $route.path.indexOf('/articleDetail') > -1}">
+          <i class="iconfont icon-article2"></i>文章
+        </router-link>
       </ul>
-    </div>
-  </div>
+      <section class="about-me-wrap">
+        <h4><i class="iconfont icon-about-me"></i>关于我</h4>
+        <p v-html="aboutMe">
+          <!-- 坐标:guangzhou<br>
+          目前还是个本科狗<br>
+          有个很好的女朋友,希望未来能好好的<br>
+          喜欢小猫小狗但是偏偏女朋友害怕<br>
+          前端菜鸡一个<br>
+          想减肥(但是停留在想的阶段) -->
+        </p>
+        <ul class="my-connection-list">
+          <li id="qq" class="my-connection-item">
+            <i class="nav-icon iconfont icon-qq"></i>
+            <span class="nav-icon-label">{{ qq }}</span><br>
+          </li>
+          <li id="weibo" class="my-connection-item" @click="openWeibo()">
+            <i class="nav-icon iconfont icon-weibo"></i>
+            <span class="nav-icon-label" :data-src="weibo">我的微博</span>
+          </li>
+        </ul>
+      </section>
+    </el-col>
+    <el-col :span="19" class="main-col-wrap">
+      <nuxt />
+    </el-col>
+    <login-flow-btn></login-flow-btn>
+  </el-row>
 </template>
 <script>
-  export default {
-    async asyncData({ store, route, error }) {
-      const { data } = await store.dispatch('BLOGGER_INFO')
-      return {
-        bloggerInfo: {
-          
-        }
+import LoginFlowBtn from '~/components/LoginFlowBtn'
+import ThemeMixin from '~/mixins/themeMixin'
+import _ from '~/utils/common.util'
+import { setTimeout } from 'timers';
+export default {
+  components: {
+    LoginFlowBtn
+  },
+  mixins: [ThemeMixin],
+  data () {
+    return {
+      avatar: '',
+      name: '',
+      qq: '',
+      weibo: '',
+      motto: '',
+      aboutMe: '',
+    }
+  },
+  computed: {
+    backgroundColor () {
+      return this.$route.path.indexOf('/articleDetail') > -1 ? 'white' : '';
+    }
+  },
+  mounted () {
+    this.$store.commit('user/SET_USER');
+    this.$store.commit('user/SET_IS_LOGIN');
+    this.$store.dispatch('blogger/GET_BLOGGER_INFO').then(res => {
+      if (res.code === 0) {
+        let info = res.bloggerInfo
+        this.avatar = info.avatar
+        this.aboutMe = info.aboutMe
+        this.qq = info.qq
+        this.weibo = info.weibo
+        this.name = info.name
+        this.motto = info.motto
       }
-    },
-    data () {
-      return {
-        headSrc: "",
-        name: "",
-        qq: '',
-        weibo: '',
-        personalizedSignature: "",
-        //                aboutMe: '',
-        aboutMe: "",
-
-        loginFlag: false,
-        headImgFile: '',
-        navBtnToggleFlag: false,
-        sexClick: false,
-
-        curSex: 0, //当前选中的性别
-        username: '',
-        password: '',
-        passwordRepeat: '',
-        selfIntroduce: '',
-
-        sexArr: [
-          { id: 0, sex: '男' },
-          { id: 1, sex: '女' },
-          { id: 2, sex: '保密'}
-        ],
-      }
-    },
-    computed: {
-      sexText () {
-        return this.sexArr[this.curSex].sex;
-      },
-      backgroundColor () {
-        return this.$route.path.indexOf('/articleDetail') > -1 ? 'white' : '';
-      }
-    },
-    methods: {
-      // 打开我的微博
-      openWeibo () {
-        window.open("http://weibo.com/u/2119171184?refer_flag=1001030001_&nick=Mr___TTTTTTTT&is_all=1");
-      },
-      // 导航按钮点击事件
-      navBtnToggle () {
-        this.navBtnToggleFlag = !this.navBtnToggleFlag;
-      },
-      // 登录
-      signin () {
-        this.navBtnToggle();
-        window.location.href = `${this.$store.getters.baseUrl}/api/user/login`
-      },
-      // 注册
-      signup () {
-        this.navBtnToggle();
-      },
-      // 退出登录
-      signout () {
-        const _self = this;
-        this.navBtnToggle();
-        this.$loading.showLoading();
-        this.$http.post(config.url + '/user/logout').then(function (response) { //接口返回数据
-          this.$loading.closeLoading();
-          const data = response.data;
-
-          if (data.success === 'ok') {
-            setTimeout(function () {
-              _self.loginFlag = false;
-            }, 200)
-          } else {
-            this.toast.toast(data.msg)
-          }
-        }).catch(function () {
-          this.toast.toast(config.errorMsg);
-          this.$loading.closeLoading();
-        });
-      },
-      // 弹出层取消
-      cancel () {
-        this.sexClick = false;
-      },
-      // 选择性别
-      handleSex (sex) {
-        this.curSex = sex;
-      },
-      // 注册或登录按钮点击事件处理
-      handleConfirm () {
-      },
-      // submit事件回调
-      signin_uphandle () {
-        
-      },
-      // 选择头像
-      selectHeadImg (event) {
-        this.headImgFile = event.target.files[0];
-      }
-    },
-    // mounted () {
-    //   this.$nextTick(function () {
-    //     this.$loading.showLoading();
-    //     this.$http.post(config.url + '/blogger/getBloggerInfo').then(function (response) { //接口返回数据
-    //       this.$loading.closeLoading();
-    //       const data = response.data;
-
-    //       if (data.success === 'ok') {
-    //         this.name = data.data.name;
-    //         this.personalizedSignature = data.data.personalizedSignature;
-    //         this.qq = data.data.qq;
-    //         this.weibo = data.data.weibo;
-    //         this.headSrc = '/images/' + data.data.avatar;
-    //         this.aboutMe = data.data.aboutMe;
-    //       } else {
-    //         this.toast.toast(data.msg)
-    //       }
-
-    //     }).catch(function (e) {
-    //       this.toast.toast(config.errorMsg);
-    //       this.$loading.closeLoading();
-    //     });
-
-    //     this.$http.post(config.url + '/api/checkLoginOrNot').then(function (response) { //接口返回数据
-    //       this.$loading.closeLoading();
-    //       const data = response.data;
-
-    //       if (data.success === 'ok') {
-    //         if (data.data.login) {
-    //           this.loginFlag = true;
-    //         }
-    //       } else {
-    //         this.toast.toast(data.msg);
-    //       }
-
-    //     }).catch(function (e) {
-    //       this.toast.toast(config.errorMsg);
-    //       this.$loading.closeLoading();
-    //     });
-    //   });
-    // }
+    })
+  },
+  methods: {
+    // 打开我的微博
+    openWeibo () {
+      window.open("http://weibo.com/u/2119171184?refer_flag=1001030001_&nick=Mr___TTTTTTTT&is_all=1");
+    }
   }
-
+}
 </script>
-
 <style lang="less">
-.main-nav {
+@import '~assets/styles/variable.less';
+.default-wrapper {
+  background: @theme-white;
+}
+.nav-list {
   height: 30vh;
-  .nav-list {
-    margin-top: 5vh;
+  margin-top: 5vh;
+}
+.nav-item {
+  height: 6vh;
+  line-height: 6vh;
+  text-align: center;
+  font-size: 1.2rem;
+  padding-right: 20px;
+  &-active,
+  &:hover {
+    border-right: 4px solid #32d3c3;
+    color: #32d3c3;
+    background-color: #26252f;
   }
-  .nav-item {
-    height: 6vh;
-    line-height: 6vh;
-    text-align: center;
-    font-size: 1.2rem;
-    padding-right: 20px;
-    &-active,
-    &:hover {
-      border-right: 4px solid #32d3c3;
-      color: #32d3c3;
-      background-color: #26252f;
-    }
-    &:hover {
-      cursor: pointer;
-    }
+  &:hover {
+    cursor: pointer;
   }
 }
 .about-me-wrap {
@@ -264,12 +143,11 @@
     cursor: default;
   }
 }
+.btn-bar {
+    text-align: center;
+}
 #qq:hover .icon-qq {
     color: #08b8b9;
-    -webkit-transition: all .2s ease-in;
-    -moz-transition: all .2s ease-in;
-    -o-transition: all .2s ease-in;
-    -ms-transition: all .2s ease-in;
     transition: all .2s ease-in;
 }
 #weibo:hover .icon-weibo {
@@ -280,256 +158,4 @@
     -ms-transition: all .2s ease-in;
     transition: all .2s ease-in;
 }
-.float-ele {
-    position: fixed;
-    right: 3rem;
-    z-index: 10000;
-}
-.float-btn {
-    width: 4rem;
-    height: 4rem;
-    line-height: 4rem;
-    top: 1rem;
-    border-radius: 50%;
-    background-color: rgba(0,0,0,.3);
-    -webkit-transition: background-color .3s linear;
-    transition: background-color .3s linear;
-    color: white;
-}
-.float-btn:hover {
-    background-color: #3d4349;
-    cursor: pointer;
-}
-.float-btn > .btn-line{
-    background-color: white;
-    height: 0.15rem;
-    width: 2rem;
-    display: inline-block;
-    position: absolute;
-    left: 1rem;
-    transform-origin: 0 0;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-transition: all .6s cubic-bezier(.165,.84,.44,1);
-    -moz-transition: all .6s cubic-bezier(.165,.84,.44,1);
-    transition: all .6s cubic-bezier(.165,.84,.44,1);
-}
-.float-btn > .btn-line:nth-of-type(1){
-    top: 1.3rem;
-}
-.float-btn > .btn-line:nth-of-type(2){
-    top: 1.95rem;
-}
-.float-btn > .btn-line:nth-of-type(3){
-    top: 2.7rem;
-}
-.float-btn.close > .btn-line:nth-of-type(1){
-    left: 1.35rem;
-    -webkit-transform: rotateZ(45deg);
-    -moz-transform: rotateZ(45deg);
-    transform: rotateZ(45deg);
-}
-.float-btn.close > .btn-line:nth-of-type(2){
-    opacity: 0;
-}
-.float-btn.close > .btn-line:nth-of-type(3){
-    -webkit-transform: rotateZ(-45deg);
-    -moz-transform: rotateZ(-45deg);
-    transform: rotateZ(-45deg);
-    left: 1.2rem;
-}
-.float-menu {
-    top: 4.5rem;
-    text-align: center;
-    color: white;
-    opacity: 0;
-    -webkit-transition: all .3s ease;
-    -moz-transition: all .3s ease;
-    transition: all .3s ease;
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
-}
-.float-menu ul > li {
-    padding: 0.5rem 2rem;
-    margin: 0.5rem 0;
-    font-size: 1.2rem;
-    background-color: rgba(0,0,0,.3);
-    border-radius: 0.5rem;
-    -webkit-transition: all .5s ease;
-    -moz-transition: all .5s ease;
-    transition: all .5s ease;
-}
-.float-menu ul > li:hover {
-    background-color: #3d4349;
-    cursor: pointer;
-}
-.float-menu.showing {
-    opacity: 1;
-    top: 5.5rem;
-}
-/*************** 弹出层样式 *************/
-.field {
-    clear: both;
-    margin: 0 0 1.5rem;
-    font-size: 1.1rem;
-}
-.field > label {
-    display: block;
-    margin: 0 0 .3rem;
-    color: rgba(0,0,0,.87);
-    font-size: 1.2rem;
-    font-weight: 700;
-    text-transform: none;
-}
-.field.required > label:after {
-    margin: -.2em 0 0 .2em;
-    content: '*';
-    color: red;
-}
-.field input,
-.field textarea{
-    font-size: 1.2rem;
-    width: 80%;
-}
-.field textarea{
-    margin: 0;
-    -webkit-appearance: none;
-    padding: .8rem 1rem;
-    background: #fff;
-    border: 1px solid rgba(34,36,38,.15);
-    outline: 0;
-    color: rgba(0,0,0,.87);
-    border-radius: .4rem;
-    box-shadow: 0 0 0 0 transparent inset;
-    -webkit-transition: color .1s ease,border-color .1s ease;
-    transition: color .1s ease,border-color .1s ease;
-    line-height: 1.2rem;
-    resize: vertical;
-}
-.field > input {
-    margin: 0;
-    outline: 0;
-    -webkit-appearance: none;
-    line-height: 1.2rem;
-    padding: 0.8rem 1rem;
-    background: #fff;
-    border: 1px solid rgba(34,36,38,.15);
-    color: rgba(0,0,0,.87);
-    border-radius: 0.4rem;
-    box-shadow: 0 0 0 0 transparent inset;
-    -webkit-transition: color .1s ease,border-color .1s ease;
-    transition: color .1s ease,border-color .1s ease;
-}
-.field input:focus,
-.field textarea:focus {
-    color: rgba(0,0,0,.95);
-    border-color: #85b7d9;
-    border-radius: .4rem;
-    background: #fff;
-    box-shadow: 0 0 0 0 rgba(34,36,38,.35) inset;
-}
-.field .text {
-    font-size: 1.1rem;
-    font-weight: 400;
-    color: rgba(0,0,0,.8);
-    display: inline-block;
-    -webkit-transition: none;
-    transition: none;
-}
-.field .dropdown-icon {
-    float: right;
-    font-size: 0.1rem;
-    color: rgba(0,0,0,.87);
-}
-.field .dropdown {
-    position: relative;
-    width: 80%;
-    cursor: pointer;
-    word-wrap: break-word;
-    line-height: 1.2rem;
-    white-space: normal;
-    outline: 0;
-    -webkit-transform: rotateZ(0);
-    transform: rotateZ(0);
-    min-height: 1.2rem;
-    background: #fff;
-    display: inline-block;
-    padding: 0.8rem 1rem;
-    color: rgba(0,0,0,.87);
-    box-shadow: none;
-    border: 1px solid rgba(34,36,38,.15);
-    border-radius: 0.4rem;
-    -webkit-transition: box-shadow .1s ease,width .1s ease;
-    transition: box-shadow .1s ease,width .1s ease;
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
-}
-.dropdown:hover {
-    border-color: rgba(34,36,38,.35);
-    box-shadow: none;
-}
-.dropdown:focus {
-    border-color: #96c8da;
-    box-shadow: none;
-}
-.dropdown .menu {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    top: 100%;
-    font-size: 1.1rem;
-    background: white;
-    box-shadow: 0 2px 3px 0 rgba(34,36,38,.15);
-    border: 1px solid rgba(34,36,38,.15);
-    border-radius: .4rem;
-    -webkit-transition: all .2s ease;
-    transition: all .2s ease;
-    will-change: opacity, top;
-}
-.menu-animation {
-    opacity: 0;
-    top:60% !important;
-}
-.dropdown .menu.hidden {
-    visibility: hidden;
-}
-.transition {
-    -webkit-animation-iteration-count: 1;
-    animation-iteration-count: 1;
-    -webkit-animation-duration: 300ms;
-    animation-duration: 300ms;
-    -webkit-animation-timing-function: ease;
-    animation-timing-function: ease;
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
-}
-.dropdown .menu-item {
-    position: relative;
-    cursor: pointer;
-    display: block;
-    border: none;
-    text-align: left;
-    line-height: 1.2rem;
-    color: rgba(0,0,0,.87);
-    padding: 0.7rem 1rem!important;
-    font-size: 1rem;
-    text-transform: none;
-    box-shadow: none;
-}
-.dropdown .menu-item.selected {
-    background: rgba(0,0,0,.03);
-    color: rgba(0,0,0,.95);
-    font-weight: 700;
-}
-.dropdown .menu-item:hover {
-    background: rgba(0,0,0,.05);
-    color: rgba(0,0,0,.95);
-    z-index: 13;
-}
-/*************** 弹出层样式 *************/
 </style>
