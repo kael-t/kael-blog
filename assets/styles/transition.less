@@ -4,3 +4,11 @@
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
   opacity: 0;
 }
+
+.fade-top-enter-active, .fade-top-leave-active {
+  transition: all .5s;
+}
+.fade-top-enter, .fade-top-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+  transform: translateY(-1rem);
+}

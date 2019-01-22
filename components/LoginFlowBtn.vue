@@ -7,18 +7,20 @@
       <span class="btn-line"></span>
     </div>
     <!-- 悬浮导航栏 -->
-    <div class="float-ele float-menu" :class="{showing: navBtnToggleFlag}">
-      <ul>
-        <template v-if="isLogin">
-          <li @click="toggleTheme()"><i class="iconfont icon-signout"></i>切换主题</li>
-          <li @click="signout()"><i class="iconfont icon-signout"></i>退出登录</li>
-        </template>
-        <template v-if="!isLogin">
-          <li @click="signin()"><i class="iconfont icon-signin"></i>登录</li>
-          <li @click="signup()"><i class="iconfont icon-signup"></i>注册</li>
-        </template>
-      </ul>
-    </div>
+    <transition name="fade-top" mode="in-out">
+      <div class="float-ele float-menu" v-show="navBtnToggleFlag">
+        <ul>
+          <template v-if="isLogin">
+            <li @click="toggleTheme()"><i class="iconfont icon-signout"></i>切换主题</li>
+            <li @click="signout()"><i class="iconfont icon-signout"></i>退出登录</li>
+          </template>
+          <template v-if="!isLogin">
+            <li @click="signin()"><i class="iconfont icon-signin"></i>登录</li>
+            <li @click="signup()"><i class="iconfont icon-signup"></i>注册</li>
+          </template>
+        </ul>
+      </div>
+    </transition>
     <!-- 登录弹框 -->
     <el-dialog
       title="登录"
@@ -106,7 +108,9 @@ export default {
       registerForm: {
         account: null,
         password: null,
-        checkPassword: null
+        checkPassword: null,
+        nickname: null,
+        email: null
       },
       loginFormRules: {
         account: [
@@ -195,6 +199,11 @@ export default {
           this.$store.dispatch('user/REGISTER', params).then(result => {
             this.submitLoading = false;
             this.showRegisterModal = false;
+            if (result.code === 0) {
+              this.$message.success(result.msg)
+            } else {
+              this.$message.error(result.msg)
+            }
           }).catch(err => {
             this.submitLoading = false;
             this.showRegisterModal = false;
@@ -237,85 +246,81 @@ export default {
 }
 </script>
 <style lang="less">
-  .float-ele {
-    position: fixed;
-    right: 3rem;
-    z-index: 10000;
+@import '~assets/styles/transition.less';
+.float-ele {
+  position: fixed;
+  right: 3rem;
+  z-index: 10000;
+}
+.float-btn {
+  width: 4rem;
+  height: 4rem;
+  line-height: 4rem;
+  top: 1rem;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,.3);
+  -webkit-transition: background-color .3s linear;
+  transition: background-color .3s linear;
+  color: white;
+  &:hover {
+    background-color: #3d4349;
+    cursor: pointer;
   }
-  .float-btn {
-    width: 4rem;
-    height: 4rem;
-    line-height: 4rem;
-    top: 1rem;
-    border-radius: 50%;
-    background-color: rgba(0,0,0,.3);
-    -webkit-transition: background-color .3s linear;
-    transition: background-color .3s linear;
-    color: white;
-    &:hover {
-      background-color: #3d4349;
-      cursor: pointer;
+  > .btn-line {
+    background-color: white;
+    height: 0.15rem;
+    width: 2rem;
+    display: inline-block;
+    position: absolute;
+    left: 1rem;
+    transform-origin: 0 0;
+    backface-visibility: hidden;
+    transition: all .6s cubic-bezier(.165,.84,.44,1);
+    &:nth-of-type(1){
+      top: 1.3rem;
     }
+    &:nth-of-type(2){
+      top: 1.95rem;
+    }
+    &:nth-of-type(3){
+      top: 2.7rem;
+    }
+  }
+  &.close {
     > .btn-line {
-      background-color: white;
-      height: 0.15rem;
-      width: 2rem;
-      display: inline-block;
-      position: absolute;
-      left: 1rem;
-      transform-origin: 0 0;
-      backface-visibility: hidden;
-      transition: all .6s cubic-bezier(.165,.84,.44,1);
       &:nth-of-type(1){
-        top: 1.3rem;
+        left: 1.35rem;
+        transform: rotateZ(45deg);
       }
       &:nth-of-type(2){
-        top: 1.95rem;
+        opacity: 0;
       }
       &:nth-of-type(3){
-        top: 2.7rem;
-      }
-    }
-    &.close {
-      > .btn-line {
-        &:nth-of-type(1){
-          left: 1.35rem;
-          transform: rotateZ(45deg);
-        }
-        &:nth-of-type(2){
-          opacity: 0;
-        }
-        &:nth-of-type(3){
-          transform: rotateZ(-45deg);
-          left: 1.2rem;
-        }
+        transform: rotateZ(-45deg);
+        left: 1.2rem;
       }
     }
   }
-  .float-menu {
-    top: 4.5rem;
-    text-align: center;
-    color: white;
-    opacity: 0;
-    transition: all .3s ease;
-    user-select:none;
-    ul {
-      > li {
-        padding: 0.5rem 2rem;
-        margin: 0.5rem 0;
-        font-size: 1.2rem;
-        background-color: rgba(0,0,0,.3);
-        border-radius: 0.5rem;
-        transition: all .5s ease;
-        &:hover {
-          background-color: #3d4349;
-          cursor: pointer;
-        }
+}
+.float-menu {
+  top: 5.5rem;
+  text-align: center;
+  color: white;
+  transition: all .3s ease;
+  user-select:none;
+  ul {
+    > li {
+      padding: 0.5rem 2rem;
+      margin: 0.5rem 0;
+      font-size: 1.2rem;
+      background-color: rgba(0,0,0,.3);
+      border-radius: 0.5rem;
+      transition: all .5s ease;
+      &:hover {
+        background-color: #3d4349;
+        cursor: pointer;
       }
     }
-    &.showing {
-      opacity: 1;
-      top: 5.5rem;
-    }
   }
+}
 </style>
