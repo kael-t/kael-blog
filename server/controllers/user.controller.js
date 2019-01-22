@@ -146,6 +146,9 @@ const UserController = {
       } else {
         return res.status(403).send(resUtils.dealNoAccessPermission())
       }
+    }).catch(err => {
+      log.error(err);
+      return res.json(resUtils.dealFail(null, '服务器内部错误'))
     })
   },
 }
