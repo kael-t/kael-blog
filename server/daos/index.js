@@ -1,7 +1,6 @@
-const BloggerDAO = require('./blogger.dao');
-const UserDAO = require('./user.dao');
 
 module.exports = {
-  BloggerDAO,
-  UserDAO
+  BloggerDAO: require('./blogger.dao'),
+  UserDAO: require('./user.dao'),
+  ArticleDAO: require('./article.dao')
 }
