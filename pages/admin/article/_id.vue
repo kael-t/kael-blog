@@ -1,18 +1,38 @@
 <template>
   <div class="article-wrapper">
-    <!-- <h4>发表文章</h4> -->
+    <div class="article-title-wrapper">
+      <el-input placeholder="输入文章标题" v-model="article.title"></el-input>
+    </div>
     <no-ssr>
       <mavon-editor
         class="editor"
         ref="mavonEditor"
         :toolbars="markdownOption"
-        v-model="handbook"
+        v-model="article.content"
         :placeholder="placeholder"
         :code-style="codeStyle"
         :ishljs="ishljs"
-        @save="onSave">
+        @save="saveArticle">
       </mavon-editor>
     </no-ssr>
+    <el-row class="article-toobar" :gutter="24">
+      <el-col :span="18">
+        <el-button type="primary" icon="el-icon-plus" size="small">新建标签</el-button>
+      </el-col>
+      <el-col :span="6" style="text-align: right;">
+        <el-switch
+          style="margin: 0 20px"
+          v-model="article.status"
+          active-color="#13ce66"
+          active-text="发布文章"
+          :active-value="status['PUBLISH']"
+          inactive-color="#409eff"
+          inactive-text="存为草稿"
+          :inactive-value="status['DRAFT']">
+        </el-switch>
+        <el-button icon="el-icon-upload" size="medium" type="primary" :loading="articleUploading" @click="saveArticle">保存</el-button>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -55,39 +75,58 @@ export default {
       placeholder: '写些东西向大家分享吧', // 提示文本
       codeStyle: 'monokai', // 主题
       ishljs: true,
-      handbook:"#### 这是手册",
+      article: {
+        title: '',
+        content: '',
+        tags: [],
+        stauts: 0
+      },
+      tags: [{
+        value: 'HTML',
+        label: 'HTML'
+      }, {
+        value: 'CSS',
+        label: 'CSS'
+      }, {
+        value: 'JavaScript',
+        label: 'JavaScript'
+      }],
+
+      articleUploading: false,
+      status: {
+        DRAFT: 0,
+        PUBLISH: 1
+      }
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      console.log(this.$refs.mavonEditor.markdownIt)
-    })
-    console.log('app init, my quill insrance object is:', this.myQuillEditor)
-    // setTimeout(() => {
-    //   this.content = 'i am changed'
-    // }, 3000)
+    if (this.$route.params.id) {
+      let id = this.$route.params.id
+      this.$store.dispatch('article/GET_ARTICLE_DETAIL', {articleId: id}).then((data) => {
+        this.article = data.data
+      })
+    }
   },
   methods: {
-    onSave (markdown, HTMLText) {
-      console.log('onsave', markdown, HTMLText)
-    },
-    onEditorBlur(editor) {
-      console.log('editor blur!', editor)
-    },
-    onEditorFocus(editor) {
-      console.log('editor focus!', editor)
-    },
-    onEditorReady(editor) {
-      console.log('editor ready!', editor)
-    },
-    onEditorChange({ editor, html, text }) {
-      console.log('editor change!', editor, html, text)
-      this.content = html
+    saveArticle () {
+      let id = this.$route.params.id
+      let { content, title, status } = this.article
+      let params = { content, title, status }
+      params.articleId = id
+      this.articleUploading = true
+      this.$store.dispatch('article/SAVE_ARTICLE', params).then(data => {
+        this.articleUploading = false
+        if (data.code === 0) {
+          this.$message.success(data.msg)
+        }
+      }).catch(err => {
+        this.articleUploading = false
+      })
     }
   }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 @import '~assets/styles/variable.less';
 .article-wrapper {
   display: flex;
@@ -95,6 +134,12 @@ export default {
   flex-direction: column;
   .editor {
     flex: 1;
+  }
+  .article-title-wrapper {
+    margin-bottom: 20px;
+  }
+  .article-toobar {
+    margin-top: 20px;
   }
 }
 #dark {
