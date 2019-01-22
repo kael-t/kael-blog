@@ -1,3 +1,5 @@
+const tablePrefix = require('../config').databaseConfig.table.prefix;
+
 module.exports = (sequelize, DataTypes) => {
   const Blogger = sequelize.define('blogger', {
     id: {
@@ -43,7 +45,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     paranoid: true,
-    underscored: true
+    underscored: true,
+    // 定义表名
+    tableName: `${tablePrefix}blogger`
   });
   return Blogger;
 };

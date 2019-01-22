@@ -16,6 +16,7 @@ export default function ({ $axios }) {
     if (status === 200) {
       switch (data.code) {
         case 0:
+        case 1:
           return Promise.resolve(data);
         case 2004:
           vm.$message.error('你还没登录啊？登陆后再试试吧？');

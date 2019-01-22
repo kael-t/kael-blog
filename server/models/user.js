@@ -1,9 +1,12 @@
+const tablePrefix = require('../config').databaseConfig.table.prefix;
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('user', {
-    id: {
+    userId: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
+      primaryKey: true,
+      field: 'id'
     },
     // 账号
     account: {
@@ -55,7 +58,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     paranoid: true,
-    underscored: true
+    underscored: true,
+    // 定义表名
+    tableName: `${tablePrefix}user`
   });
   return User;
 };

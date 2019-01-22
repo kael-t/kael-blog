@@ -4,9 +4,9 @@ const config = {
     database: 'kael-blog',        // 开发环境数据库名
     username: 'root',         // 开发环境用户名
     password: '123456',       // 开发环境密码
-    // table: {
-    //   prefix: 't_'            // 开发环境表前缀
-    // },
+    table: {
+      prefix: 't_'            // 开发环境表前缀
+    },
     options: {
       host: '127.0.0.1',      // 开发环境数据库主机
       port: 3306,             // 开发环境数据库端口号
@@ -27,9 +27,9 @@ const config = {
     database: 'seach',        // 生产环境数据库名
     username: 'root',         // 生产环境用户名
     password: '123456',       // 生产环境密码
-    // table: {
-    //   prefix: 't_'            // 生产环境表前缀
-    // },
+    table: {
+      prefix: 't_'            // 生产环境表前缀
+    },
     options: {
       host: '127.0.0.1',      // 生产环境数据库主机
       port: 3306,             // 生产环境数据库端口号

@@ -21,9 +21,9 @@
             <i class="el-icon-info"></i>
             <span slot="title">侧边栏信息</span>
           </el-menu-item>
-          <!-- <el-menu-item index="2-2">
-            <span slot="title">选项4</span>
-          </el-menu-item> -->
+          <el-menu-item index="/admin/userManagement">
+            <span slot="title">用户管理</span>
+          </el-menu-item>
         </el-submenu>
         <el-menu-item index="/admin/article">
           <i class="el-icon-document"></i>
@@ -36,7 +36,6 @@
       </el-menu>
     </div>
     <el-main class="admin-main">
-      <button @click="toggleTheme">切换主题</button>
       <nuxt />
     </el-main>
   </el-container>
