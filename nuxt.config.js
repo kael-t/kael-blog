@@ -28,15 +28,17 @@ module.exports = {
   */
   css: [
     'element-ui/lib/theme-chalk/index.css',
-    '~assets/styles/index.less'
+    '~assets/styles/index.less',
+    'mavon-editor/dist/css/index.css'
   ],
 
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/element-ui',
-    '@/plugins/axios'
+    '~plugins/element-ui',
+    '~plugins/axios',
+    { src: '~plugins/mavon-editor.js', ssr: false }
   ],
 
   /*
