@@ -23,6 +23,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 0,
       allowNull: false
+    },
+    // 浏览量
+    pageView: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false
     }
   }, {
     paranoid: true,
@@ -30,5 +36,13 @@ module.exports = (sequelize, DataTypes) => {
     // 定义表名
     tableName: `${tablePrefix}article`
   });
+  Article.associate = (models) => {
+    models.article.belongsToMany(models.tag, {
+      as: 'tags',
+      through: 't_article_to_tag',
+      foreignKey: 'article_id',
+      targetKey: 'articleId'
+    });
+  };
   return Article;
 };

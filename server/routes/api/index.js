@@ -7,4 +7,6 @@ router.use('/blogger', require('./blogger'))
 
 router.use('/article', require('./article'))
 
+router.use('/tag', require('./tag'))
+
 module.exports = router

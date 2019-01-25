@@ -35,5 +35,6 @@ if (process.env.NODE_ENV === 'development') {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+db.exclude = ['created_at', 'updated_at', 'deleted_at']
 
 module.exports = db;

@@ -10,10 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       field: 'id'
     },
     // 标签名
-    tagName: {
-      type: DataTypes.INTEGER,
+    label: {
+      type: DataTypes.STRING,
       unique: true,
-      field: 'tag_name'
+      field: 'tag_label'
     }
   }, {
     paranoid: true,
@@ -21,5 +21,13 @@ module.exports = (sequelize, DataTypes) => {
     // 定义表名
     tableName: `${tablePrefix}tag`
   });
+  Tag.associate = (models) => {
+    models.tag.belongsToMany(models.article, {
+      as: 'articles',
+      through: 't_article_to_tag',
+      foreignKey: 'tag_id',
+      targetKey: 'tagId'
+    });
+  };
   return Tag;
 };
