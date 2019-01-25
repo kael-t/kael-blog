@@ -3,6 +3,11 @@
     <div class="article-title-wrapper">
       <el-input placeholder="输入文章标题" v-model="article.title"></el-input>
     </div>
+    <tag-list
+      v-model="test"
+      :selectable="true"
+      @on-select="tagSelect"
+    ></tag-list>
     <no-ssr>
       <mavon-editor
         class="editor"
@@ -15,30 +20,29 @@
         @save="saveArticle">
       </mavon-editor>
     </no-ssr>
-    <el-row class="article-toobar" :gutter="24">
-      <el-col :span="18">
-        <el-button type="primary" icon="el-icon-plus" size="small">新建标签</el-button>
-      </el-col>
-      <el-col :span="6" style="text-align: right;">
-        <el-switch
-          style="margin: 0 20px"
-          v-model="article.status"
-          active-color="#13ce66"
-          active-text="发布文章"
-          :active-value="status['PUBLISH']"
-          inactive-color="#409eff"
-          inactive-text="存为草稿"
-          :inactive-value="status['DRAFT']">
-        </el-switch>
-        <el-button icon="el-icon-upload" size="medium" type="primary" :loading="articleUploading" @click="saveArticle">保存</el-button>
-      </el-col>
-    </el-row>
+    <div class="article-toobar">
+      <el-switch
+        style="margin: 0 20px"
+        v-model="article.status"
+        active-color="#13ce66"
+        active-text="发布文章"
+        :active-value="status['PUBLISH']"
+        inactive-color="#409eff"
+        inactive-text="存为草稿"
+        :inactive-value="status['DRAFT']">
+      </el-switch>
+      <el-button icon="el-icon-upload" size="medium" type="primary" :loading="articleUploading" @click="saveArticle">保存</el-button>
+    </div>
   </div>
 </template>
 
 <script>
+import TagList from '~/components/TagList'
 export default {
   layout: 'admin',
+  components: {
+    TagList
+  },
   data () {
     return {
       markdownOption:{
@@ -96,7 +100,9 @@ export default {
       status: {
         DRAFT: 0,
         PUBLISH: 1
-      }
+      },
+
+      test: [{tagId: 1, tagName: 'node'}, {tagId: 2, tagName: 'javascript'}]
     }
   },
   mounted() {
@@ -109,6 +115,9 @@ export default {
   },
   methods: {
     saveArticle () {
+      if (this.articleUploading) {
+        return
+      }
       let id = this.$route.params.id
       let { content, title, status } = this.article
       let params = { content, title, status }
@@ -122,6 +131,9 @@ export default {
       }).catch(err => {
         this.articleUploading = false
       })
+    },
+    tagSelect (res) {
+      console.log(res)
     }
   }
 }
@@ -129,17 +141,15 @@ export default {
 <style lang="less" scoped>
 @import '~assets/styles/variable.less';
 .article-wrapper {
-  display: flex;
+  // display: flex;
   height: 100%;
   flex-direction: column;
   .editor {
-    flex: 1;
-  }
-  .article-title-wrapper {
-    margin-bottom: 20px;
+    height: 80%;
   }
   .article-toobar {
     margin-top: 20px;
+    text-align: right;
   }
 }
 #dark {
