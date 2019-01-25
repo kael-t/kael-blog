@@ -90,7 +90,6 @@ const _formatRequest = (req, resTime) => {
     request client ip: ${ip}
     ${method === 'GET' ? 'request query: ' + JSON.stringify(req.query) : 'request body: ' + JSON.stringify(req.body)}
     response status: ${req.res.statusCode}
-    response body: ${JSON.stringify(req.res.body)}
     response time: ${resTime}ms
     ************* request log end *************
   `;
@@ -132,6 +131,7 @@ const logger = {
 
   reqLog (req, resTime) {
     if (req) {
+      console.log(req)
       requestLog.info(_formatRequest(req, resTime))
     }
   }

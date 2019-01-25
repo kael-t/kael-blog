@@ -9,7 +9,7 @@ const tokenUtils = require('../utils/token.utils');
 
 const _setCookie = (res, user) => {
   let clientUser = {
-    id: user.id,
+    userId: user.userId,
     isGithuber: user.isGithuber,
     nickname: user.nickname,
     email: user.email
@@ -62,15 +62,7 @@ const UserController = {
     password = encryptUtils.md5Encrypt(password);
     UserService.login(account, password).then(user => {
       if (user) {
-        // _setCookie(res, user)
-        let clientUser = {
-          id: user.id,
-          isGithuber: user.isGithuber,
-          nickname: user.nickname,
-          email: user.email
-        }
-        res.cookie('token', tokenUtils.generateToken(user))
-        res.cookie('user', JSON.stringify(clientUser))
+        _setCookie(res, user)
         return res.json(resUtils.dealSuccess(null, '登陆成功'))
       } else {
         return res.json(resUtils.dealFail(null, '登陆失败'))
@@ -132,8 +124,8 @@ const UserController = {
 
   // 检查权限
   checkAuth (req, res, next) {
-    let id = req.tokenInfo.id;
-    UserService.checkAuth(id).then(isPassCheck => {
+    let userId = req.tokenInfo.userId;
+    UserService.checkAuth(userId).then(isPassCheck => {
       if(isPassCheck) {
         return res.json(resUtils.dealSuccess({pass: isPassCheck}, '鉴权完毕'));
       } else {

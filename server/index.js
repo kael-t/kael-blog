@@ -7,18 +7,7 @@ const app = express()
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const route = require('./routes')
-
 const log = require('./utils/log.utils');
-app.all('*', async (req, res, next) => {
-  // 响应开始时间
-  const start = new Date();
-  // 进入下一中间件
-  await next();
-  // 记录间隔时间
-  const duration = new Date() - start;
-  // 写入请求日志
-  log.reqLog(req, duration);
-});
 
 const host = process.env.HOST || globalConfig.host
 const port = process.env.PORT || globalConfig.port
@@ -31,6 +20,17 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
+
+app.all('*', async (req, res, next) => {
+  // 响应开始时间
+  const start = new Date();
+  // 进入下一中间件
+  await next();
+  // 记录间隔时间
+  const duration = new Date() - start;
+  // 写入请求日志
+  log.reqLog(req, duration);
+});
 
 // set routes
 app.use('/', route)

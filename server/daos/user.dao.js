@@ -48,8 +48,8 @@ const UserDAO = {
    * @param {Number} 用户id
    * @returns {Promise} - Sequelize 数据库操作的结果
    */
-  queryUserById (id) {
-    return UserModel.findById(id)
+  queryUserById (userId) {
+    return UserModel.findById(userId)
   }
 }
 

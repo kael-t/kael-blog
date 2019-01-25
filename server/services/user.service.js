@@ -34,8 +34,8 @@ const UserService = {
    * @param {Number} 用户id
    * @returns {Promise} - Sequelize 数据库操作的结果
    */
-  checkAuth (id) {
-    return DAO.UserDAO.queryUserById(id).then(user => {
+  checkAuth (userId) {
+    return DAO.UserDAO.queryUserById(userId).then(user => {
       return Promise.resolve(user.priv === 1 ? true : false)
     })
   }

@@ -6,8 +6,9 @@ const utils = {
   // 生成token
   generateToken (user) {
     try {
+      console.log(user)
       let payload = {
-        id: user.id,
+        userId: user.userId,
         isGithuber: user.isGithuber,
         nickname: user.nickname,
         email: user.email
