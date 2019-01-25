@@ -109,7 +109,22 @@ const utils = {
       code: PERMISSION_NO_ACCESS,
       msg: msg
     }
-  }
+  },
+
+  /**
+   * @description 检查必须的参数
+   * @param {Object} 参数表
+   * @param {Array<String>} 必填的参数的key值
+   * @returns
+   */
+  checkLackParams (params = {}, arr = []) {
+    if (arr.length === 0) return
+    for (let i in arr) {
+      if (!params[arr[i]]) {
+        return this.dealLackParam(arr[i])
+      }
+    }
+  },
 }
 
 module.exports = utils;

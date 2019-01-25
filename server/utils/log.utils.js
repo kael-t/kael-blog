@@ -123,7 +123,6 @@ const logger = {
   },
 
   error (log) {
-    console.log(_layout(log))
     commonLog.error(_layout(log))
   },
 

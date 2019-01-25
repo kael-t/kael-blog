@@ -84,17 +84,9 @@ const UserController = {
   async register (req, res, next) {
     let params = req.body;
     let { account, password, nickname, email, name, motto, avatar } = params;
-    if (!account) {
-      return res.json(resUtils.dealLackParam('account'))
-    }
-    if (!password) {
-      return res.json(resUtils.dealLackParam('account'))
-    }
-    if (!nickname) {
-      return res.json(resUtils.dealLackParam('nickname'))
-    }
-    if (!email) {
-      return res.json(resUtils.dealLackParam('email'))
+    let checkResult = resUtils.checkLackParams(params, ['account', 'password', 'nickname', 'email'])
+    if (checkResult) {
+      return res.json(checkResult)
     }
     let userInfo = {
       account,
@@ -115,8 +107,9 @@ const UserController = {
   // 检查是否有重复account
   checkAccount (req, res, next) {
     let account = req.body.account;
-    if (!account) {
-      return res.json(resUtils.dealLackParam('account'))
+    let checkResult = resUtils.checkLackParams(req.body, ['account'])
+    if (checkResult) {
+      return res.json(checkResult)
     }
     UserService.checkAccount(account).then(result => {
       if (result === 0) {

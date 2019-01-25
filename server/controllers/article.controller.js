@@ -5,8 +5,9 @@ const ArticleContoller = {
   // 获取文章详情
   getArticleDetail (req, res, next) {
     let articleId = req.query.articleId
-    if (!articleId) {
-      return res.json(resUtils.dealLackParam('articleId'))
+    let checkResult = resUtils.checkLackParams(params, ['articleId'])
+    if (checkResult) {
+      return res.json(checkResult)
     }
     ArticleService.getArticleDetail(articleId).then(article => {
       return res.json(resUtils.dealSuccess({data: article}, '获取文章成功'))
