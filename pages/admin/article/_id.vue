@@ -1,50 +1,60 @@
 <template>
   <div class="article-wrapper">
-    <div class="article-title-wrapper">
-      <el-input placeholder="输入文章标题" v-model="article.title"></el-input>
+    <div class="article-container">
+      <div class="article-title-wrapper">
+        <el-input placeholder="输入文章标题" v-model="article.title"></el-input>
+      </div>
+      <tag-list
+        v-model="tags"
+        :selectable="true"
+        :can-add="true"
+        @on-select="tagSelect"
+        @on-add-tag="handleAddTag"
+      ></tag-list>
+      <no-ssr>
+        <mavon-editor
+          class="editor"
+          ref="mavonEditor"
+          :toolbars="markdownOption"
+          v-model="article.content"
+          :placeholder="placeholder"
+          :code-style="codeStyle"
+          :ishljs="ishljs"
+          @save="saveArticle">
+        </mavon-editor>
+      </no-ssr>
+      <div class="article-toobar">
+        <el-switch
+          style="margin: 0 20px"
+          v-model="article.status"
+          active-color="#13ce66"
+          active-text="发布文章"
+          :active-value="status['PUBLISH']"
+          inactive-color="#409eff"
+          inactive-text="存为草稿"
+          :inactive-value="status['DRAFT']">
+        </el-switch>
+        <el-button icon="el-icon-upload" size="medium" type="primary" :loading="articleUploading" @click="saveArticle">保存</el-button>
+      </div>
     </div>
-    <tag-list
-      v-model="tags"
-      :selectable="true"
-      :can-add="true"
-      @on-select="tagSelect"
-      @on-add-tag="handleAddTag"
-    ></tag-list>
-    <no-ssr>
-      <mavon-editor
-        class="editor"
-        ref="mavonEditor"
-        :toolbars="markdownOption"
-        v-model="article.content"
-        :placeholder="placeholder"
-        :code-style="codeStyle"
-        :ishljs="ishljs"
-        @save="saveArticle">
-      </mavon-editor>
-    </no-ssr>
-    <div class="article-toobar">
-      <el-switch
-        style="margin: 0 20px"
-        v-model="article.status"
-        active-color="#13ce66"
-        active-text="发布文章"
-        :active-value="status['PUBLISH']"
-        inactive-color="#409eff"
-        inactive-text="存为草稿"
-        :inactive-value="status['DRAFT']">
-      </el-switch>
-      <el-button icon="el-icon-upload" size="medium" type="primary" :loading="articleUploading" @click="saveArticle">保存</el-button>
-    </div>
+    <side-bar>
+      <ul>
+        <li>123</li>
+        <li>456</li>
+      </ul>
+    </side-bar>
   </div>
 </template>
 
 <script>
 import TagList from '~/components/TagList'
+import SideBar from '~/components/SideBar'
 import { deepClone } from '~/utils/common.utils'
 export default {
   layout: 'admin',
   components: {
-    TagList
+    TagList,
+    SideBar
   },
   async fetch ({ store }) {
     if (!store.state.tag.list.length) {
@@ -158,12 +168,19 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
+<style lang="less">
 @import '~assets/styles/variable.less';
+.el-main {
+  padding: 0;
+}
 .article-wrapper {
-  // display: flex;
+  display: flex;
   height: 100%;
-  flex-direction: column;
+}
+.article-container {
+  flex: 1;
+  padding: 20px;
+  transition: all .3s;
   .editor {
     height: 80%;
   }
