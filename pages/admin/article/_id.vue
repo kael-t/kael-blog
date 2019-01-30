@@ -4,9 +4,11 @@
       <el-input placeholder="输入文章标题" v-model="article.title"></el-input>
     </div>
     <tag-list
-      v-model="test"
+      v-model="tags"
       :selectable="true"
+      :can-add="true"
       @on-select="tagSelect"
+      @on-add-tag="handleAddTag"
     ></tag-list>
     <no-ssr>
       <mavon-editor
@@ -38,10 +40,16 @@
 
 <script>
 import TagList from '~/components/TagList'
+import { deepClone } from '~/utils/common.utils'
 export default {
   layout: 'admin',
   components: {
     TagList
+  },
+  async fetch ({ store }) {
+    if (!store.state.tag.list.length) {
+      await store.dispatch('tag/GET_TAG_LIST')
+    }
   },
   data () {
     return {
@@ -82,19 +90,9 @@ export default {
       article: {
         title: '',
         content: '',
-        tags: [],
+        tagIds: '',
         stauts: 0
       },
-      tags: [{
-        value: 'HTML',
-        label: 'HTML'
-      }, {
-        value: 'CSS',
-        label: 'CSS'
-      }, {
-        value: 'JavaScript',
-        label: 'JavaScript'
-      }],
 
       articleUploading: false,
       status: {
@@ -102,7 +100,12 @@ export default {
         PUBLISH: 1
       },
 
-      test: [{tagId: 1, tagName: 'node'}, {tagId: 2, tagName: 'javascript'}]
+      // tags: [{tagId: 1, tagName: 'node'}, {tagId: 2, tagName: 'javascript'}]
+    }
+  },
+  computed: {
+    tags () {
+      return deepClone(this.$store.state.tag.list)
     }
   },
   mounted() {
@@ -119,9 +122,8 @@ export default {
         return
       }
       let id = this.$route.params.id
-      let { content, title, status } = this.article
-      let params = { content, title, status }
-      params.articleId = id
+      let { content, title, status, tagIds } = this.article
+      let params = { content, title, status, tagIds, articleId: id }
       this.articleUploading = true
       this.$store.dispatch('article/SAVE_ARTICLE', params).then(data => {
         this.articleUploading = false
@@ -132,8 +134,26 @@ export default {
         this.articleUploading = false
       })
     },
-    tagSelect (res) {
-      console.log(res)
+    tagSelect (tags) {
+      this.article.tagIds = tags.map(tag => {
+        return tag.tagId
+      }).join(',')
+    },
+    updateTags () {
+      this.$store.dispatch('tag/GET_TAG_LIST')
+    },
+    handleAddTag (label) {
+      if (label) {
+        this.$store.dispatch('tag/CREATE_TAG', {label: label}).then(data => {
+          if (data.code === 0) {
+            this.$message.success('新增标签成功')
+            this.tags.push(data.tag)
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+      }
+      this.label = '';
     }
   }
 }

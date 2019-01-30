@@ -19,8 +19,8 @@ const TagContoller = {
     if (checkResult) {
       return res.json(checkResult)
     }
-    TagService.createTag(label).then(() => {
-      return res.json(resUtils.dealSuccess(null, '新建标签成功'))
+    TagService.createTag(label).then(tag => {
+      return res.json(resUtils.dealSuccess({tag: tag}, '新建标签成功'))
     }).catch(err => {
       log.error(err);
       if (err.name === 'SequelizeUniqueConstraintError') {

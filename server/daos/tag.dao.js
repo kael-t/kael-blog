@@ -1,5 +1,5 @@
 const TagModel = require('../models').tag
-const exclude = require('../models').exclude
+const exclude = require('../models').sequelize.exclude
 
 const TagDAO = {
   /**
@@ -10,7 +10,7 @@ const TagDAO = {
     return TagModel.findAll({
       attributes: {
         exclude: exclude
-      }
+      } 
     })
   },
 

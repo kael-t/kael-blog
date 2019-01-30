@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     pageView: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
-      allowNull: false
+      allowNull: false,
+      field: 'page_view'
     }
   }, {
     paranoid: true,
