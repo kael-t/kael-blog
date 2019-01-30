@@ -7,9 +7,21 @@
         v-for="(item, index) in tagList"
         :key="item.tagId"
         @click="selectTag(item, index)">
-        <span>{{item.tagName}}</span>
+        <span>{{item.label}}</span>
         <sup class="tag-close-btn" v-if="closable && !selectable" @click="closeTag(index)">×</sup>
         <sup class="tag-select-btn" v-show="item.selected"><div class="hook"></div></sup>
+      </li>
+      <li class="new-tag" v-if="canAdd">
+        <el-input
+          class="input-new-tag"
+          v-if="inputVisible"
+          v-model="newLabel"
+          ref="saveTagInput"
+          size="small"
+          @keyup.enter.native="handleInputConfirm"
+          @blur="handleInputConfirm"
+        ></el-input>
+        <el-button v-else type="primary" size="small" icon="el-icon-plus" @click="showInput">新增标签</el-button>
       </li>
     </ul>
   </div>
@@ -31,6 +43,10 @@ export default {
       type: Boolean,
       default: false
     },
+    canAdd: {
+      type: Boolean,
+      default: false
+    },
     disableTransitions: {
       type: Boolean,
       default: false
@@ -45,11 +61,15 @@ export default {
   },
   data () {
     return {
-      tagList: this.value
+      tagList: this.value,
+      inputVisible: false,
+      newLabel: ''
     }
   },
-  computed: {
-    
+  watch: {
+    value (newVal, oldVal) {
+      console.log(newVal, oldVal)
+    }
   },
   methods: {
     closeTag (index) {
@@ -63,6 +83,17 @@ export default {
       item.selected = !item.selected;
       this.$set(this.tagList, index, item)
       this.$emit('on-select', this.tagList.filter(tag => tag.selected))
+    },
+    showInput() {
+      this.inputVisible = true;
+      this.$nextTick(() => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    handleInputConfirm() {
+      this.$emit('on-add-tag', this.newLabel)
+      this.newLabel = ''
+      this.inputVisible = false;
     }
   }
 }
@@ -124,6 +155,10 @@ export default {
 }
 .tag-list-wrapper {
   padding: 10px 20px;
+}
+.new-tag {
+  display: inline-block;
+  width: 100px;
 }
 .tag {
   position: relative;
