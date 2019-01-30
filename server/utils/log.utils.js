@@ -131,7 +131,6 @@ const logger = {
 
   reqLog (req, resTime) {
     if (req) {
-      console.log(req)
       requestLog.info(_formatRequest(req, resTime))
     }
   }

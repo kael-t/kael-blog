@@ -50,7 +50,6 @@
 <script>
 import LoginFlowBtn from '~/components/LoginFlowBtn'
 import ThemeMixin from '~/mixins/themeMixin'
-import _ from '~/utils/common.util'
 import { setTimeout } from 'timers';
 export default {
   components: {
