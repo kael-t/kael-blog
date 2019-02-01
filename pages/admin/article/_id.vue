@@ -170,9 +170,6 @@ export default {
 </script>
 <style lang="less">
 @import '~assets/styles/variable.less';
-.el-main {
-  padding: 0;
-}
 .article-wrapper {
   display: flex;
   height: 100%;

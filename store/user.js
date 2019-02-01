@@ -4,7 +4,8 @@ export const state = () => {
   return {
     isLogin: false,
     user: null,
-    theme: ''
+    theme: '',
+    list: []
   }
 }
 
@@ -47,5 +48,11 @@ export const actions = {
     commit('SET_USER')
     commit('SET_IS_LOGIN')
     return data
-  }
+  },
+  // 获取用户列表
+  async GET_USER_LIST ({ commit, state, getters }, params) {
+    console.log(params)
+    const data = await this.$axios.get('/api/user/getUserList', {params: params})
+    return data
+  },
 }

@@ -5,7 +5,7 @@
       class="sidebar-collapse-btn"
       :class="{'sidebar-collapse-btn--showing': isShowing}"
       @click="isShowing = !isShowing"
-    >展开</button>
+    >{{tipText}}</button>
     <div class="sidebar-container">
       <slot></slot>
     </div>
@@ -31,10 +31,15 @@ export default {
       isShowing: this.show
     }
   },
-  
+  computed: {
+    tipText () {
+      return this.isShowing ? '收起' : '展开'
+    }
+  }
 }
 </script>
 <style lang="less">
+@import "~assets/styles/variable.less";
 .sidebar-wrapper {
   position: relative;
   width: 0;
@@ -46,9 +51,21 @@ export default {
 }
 .sidebar-collapse-btn {
   position: fixed;
-  top: 10px;
-  right: 10px;
-  transition: all .3s ease-out;
+  width: 70px;
+  height: 40px;
+  top: 71px;
+  right: 0;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  transition: right 0.3s ease-out;
+  color: @theme-white;
+  background-color: @theme-primary;
+  border-color: @theme-primary;
+  box-shadow: 3px 3px 10px #888888;
+  z-index: 10000;
+  &:hover {
+    opacity: 0.8;
+  }
   &&--showing {
     right: 250px;
   }
@@ -59,5 +76,7 @@ export default {
   width: 100%;
   padding: 0 17px;
   overflow-y: auto;
+  z-index: 10001;
+  background: white;
 }
 </style>

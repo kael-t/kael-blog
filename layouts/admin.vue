@@ -5,7 +5,7 @@
         <el-radio-button :label="false">展开</el-radio-button>
         <el-radio-button :label="true">收起</el-radio-button>
       </el-radio-group> -->
-      <el-menu router default-active="/admin/bloggerInfo" class="admin-nav-menu" :collapse="isCollapse">
+      <el-menu router :default-active="$route.path" class="admin-nav-menu" :collapse="isCollapse">
         <el-tooltip class="item" effect="dark" content="展开" placement="right" :disabled="!isCollapse">
           <div class="collapse-btn" @click="isCollapse = !isCollapse">
             <i class="el-icon-menu" :class="{'rotate-180': !isCollapse}"></i>
