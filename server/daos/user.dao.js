@@ -50,6 +50,21 @@ const UserDAO = {
    */
   queryUserById (userId) {
     return UserModel.findById(userId)
+  },
+  /**
+   * @description 获取人员列表
+   * @param {Number} 页大小
+   * @param {Number} 页码
+   * @returns {Promise} - Sequelize 数据库操作的结果
+   */
+  queryUserList (pageSize, pageNo) {
+    return UserModel.findAndCountAll({
+      offset: pageSize * (pageNo - 1),
+      limit: pageSize,
+      attributes: {
+        exclude: ['password', 'updated_at', 'deleted_at']
+      }
+    })
   }
 }
 

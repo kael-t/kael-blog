@@ -136,6 +136,20 @@ const UserController = {
       return res.json(resUtils.dealFail(null, '服务器内部错误'))
     })
   },
+
+  // 获取用户列表
+  getUserList (req, res, next) {
+    let params = req.query;
+    let { pageSize = 20, pageNo = 1 } = params
+    pageSize = parseInt(pageSize)
+    pageNo = parseInt(pageNo)
+    UserService.getUserList(pageSize, pageNo).then(users => {
+      return res.json(resUtils.dealSuccess(users, '获取人员列表成功'));
+    }).catch(err => {
+      log.error(err);
+      return res.json(resUtils.dealFail(null, '获取人员列表失败'))
+    })
+  },
 }
 
 module.exports = UserController

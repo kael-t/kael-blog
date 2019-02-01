@@ -38,6 +38,16 @@ const UserService = {
     return DAO.UserDAO.queryUserById(userId).then(user => {
       return Promise.resolve(user.priv === 1 ? true : false)
     })
+  },
+
+  /**
+   * @description 获取人员列表
+   * @param {Number} 页大小
+   * @param {Number} 页码
+   * @returns {Promise} - Sequelize 数据库操作的结果
+   */
+  getUserList (pageSize, pageNo) {
+    return DAO.UserDAO.queryUserList(pageSize, pageNo)
   }
 }
 

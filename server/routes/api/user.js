@@ -12,5 +12,6 @@ router
   .post('/logout', user.logout) // 退出登录
   .use('/', tokenMiddleware)
   .post('/checkAuth', user.checkAuth) // 检查权限
+  .get('/getUserList', user.getUserList) // 获取用户列表
 
 module.exports = router
