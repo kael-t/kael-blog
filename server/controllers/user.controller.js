@@ -7,15 +7,18 @@ const encryptUtils = require('../utils/encrypt.utils');
 const log = require('../utils/log.utils');
 const tokenUtils = require('../utils/token.utils');
 
-const _setCookie = (res, user) => {
+const _setCookie = (res, user, options = null) => {
+  options = Object.assign({
+    maxAge: 7*24*60*60*1000
+  }, options)
   let clientUser = {
     userId: user.userId,
     isGithuber: user.isGithuber,
     nickname: user.nickname,
     email: user.email
   }
-  res.cookie('token', tokenUtils.generateToken(user))
-  res.cookie('user', JSON.stringify(clientUser))
+  res.cookie('token', tokenUtils.generateToken(user), options)
+  res.cookie('user', JSON.stringify(clientUser), options)
 }
 
 const UserController = {
