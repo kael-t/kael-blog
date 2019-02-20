@@ -1,4 +1,4 @@
-const DAO = require('../daos');
+const UserDAO = require('../daos').UserDAO;
 
 const UserService = {
   /**
@@ -7,7 +7,7 @@ const UserService = {
    * @returns {Promise} - Sequelize 数据库操作的结果
    */
   findOrAddUser (user) {
-    return DAO.UserDAO.findOrCreateUser(user)
+    return UserDAO.findOrCreateUser(user)
   },
 
   /**
@@ -16,7 +16,7 @@ const UserService = {
    * @returns {Promise} - Sequelize 数据库操作的结果
    */
   checkAccount (account) {
-    return DAO.UserDAO.checkAccount(account)
+    return UserDAO.checkAccount(account)
   },
 
   /**
@@ -26,7 +26,7 @@ const UserService = {
    * @returns {Promise} - Sequelize 数据库操作的结果
    */
   login (account, password) {
-    return DAO.UserDAO.findUserByAccAndPwd(account, password)
+    return UserDAO.findUserByAccAndPwd(account, password)
   },
 
   /**
@@ -35,7 +35,7 @@ const UserService = {
    * @returns {Promise} - Sequelize 数据库操作的结果
    */
   checkAuth (userId) {
-    return DAO.UserDAO.queryUserById(userId).then(user => {
+    return UserDAO.queryUserById(userId).then(user => {
       return Promise.resolve(user.priv === 1 ? true : false)
     })
   },
@@ -47,7 +47,16 @@ const UserService = {
    * @returns {Promise} - Sequelize 数据库操作的结果
    */
   getUserList (pageSize, pageNo) {
-    return DAO.UserDAO.queryUserList(pageSize, pageNo)
+    return UserDAO.queryUserList(pageSize, pageNo)
+  },
+
+  /**
+   * @description 设置权限
+   * @param {Object} 参数
+   * @returns {Promise} - Sequelize 数据库操作的结果
+   */
+  updatePriv (params) {
+    return UserDAO.updatePriv(params)
   }
 }
 

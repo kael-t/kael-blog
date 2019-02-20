@@ -51,8 +51,12 @@ export const actions = {
   },
   // 获取用户列表
   async GET_USER_LIST ({ commit, state, getters }, params) {
-    console.log(params)
     const data = await this.$axios.get('/api/user/getUserList', {params: params})
+    return data
+  },
+  // 获取用户列表
+  async SET_PRIV ({ commit, state, getters }, params) {
+    const data = await this.$axios.post('/api/user/setPriv', params)
     return data
   },
 }

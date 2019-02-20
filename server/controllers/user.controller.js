@@ -153,6 +153,21 @@ const UserController = {
       return res.json(resUtils.dealFail(null, '获取人员列表失败'))
     })
   },
+
+  // 设置权限
+  setPriv (req, res, next) {
+    let params = req.body
+    let checkResult = resUtils.checkLackParams(params, ['userId', 'priv'])
+    if (checkResult) {
+      return res.json(checkResult)
+    }
+    UserService.updatePriv(params).then(() => {
+      return res.json(resUtils.dealSuccess(null, '设置权限成功'));
+    }).catch(err => {
+      log.error(err);
+      return res.json(resUtils.dealFail(null, '设置权限失败'))
+    })
+  }
 }
 
 module.exports = UserController

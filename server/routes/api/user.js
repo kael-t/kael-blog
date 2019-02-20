@@ -13,5 +13,6 @@ router
   .use('/', tokenMiddleware)
   .post('/checkAuth', user.checkAuth) // 检查权限
   .get('/getUserList', user.getUserList) // 获取用户列表
+  .post('/setPriv', user.setPriv) // 设置权限
 
 module.exports = router

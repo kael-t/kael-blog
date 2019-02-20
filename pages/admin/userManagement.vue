@@ -41,7 +41,8 @@
           placeholder="请输入用户名"/>
       </template>
       <template slot-scope="scope">
-        <a>设为管理员</a>
+        <a v-if="scope.row.priv === 0" @click="setPriv(scope.row, 'admin')">设为管理员</a>
+        <a v-else-if="scope.row.priv === 1" @click="setPriv(scope.row, 'normal')">设为普通人员</a>
       </template>
     </el-table-column>
     <div class="pagination-wrapper" slot="append">
@@ -90,6 +91,23 @@ export default {
         if (data.code === 0) {
           this.userData = data.rows
           this.total = data.count
+        }
+      })
+    },
+    // 设为管理员
+    setPriv (row, role) {
+      let params = {
+        userId: row.userId
+      }
+      switch (role) {
+        case 'admin': params.priv = 1;break;
+        case 'normal': params.priv = 0;break;
+        default: params.priv = 0
+      }
+      this.$store.dispatch('user/SET_PRIV', params).then(data => {
+        if (data.code === 0) {
+          this.$message.success(data.msg)
+          row.priv = params.priv
         }
       })
     }

@@ -65,6 +65,21 @@ const UserDAO = {
         exclude: ['password', 'updated_at', 'deleted_at']
       }
     })
+  },
+  /**
+   * @description 设置权限
+   * @param {Number} userId - 用户Id
+   * @param {Number} priv - 权限等级
+   * @returns {Promise} - Sequelize 数据库操作的结果
+   */
+  updatePriv ({ userId, priv }) {
+    return UserModel.update({
+      priv: priv
+    }, {
+      where: {
+        userId: userId
+      }
+    })
   }
 }
 
