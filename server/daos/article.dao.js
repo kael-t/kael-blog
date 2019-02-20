@@ -23,6 +23,19 @@ const ArticleDAO = {
     })
   },
   /**
+   * @description 获取文章列表
+   * @param {Number} 页大小
+   * @param {Number} 页码
+   * @returns {Promise} - Sequelize 数据库操作的结果
+   */
+  queryArticleList (pageSize, pageNo) {
+    return ArticleModel.findAndCountAll({
+      offset: pageSize * (pageNo - 1),
+      limit: pageSize,
+      attributes: ['articleId', 'title', 'content', 'status', 'pageView']
+    })
+  },
+  /**
    * 新增文章
    */
   createArticle (articleInfo) {
@@ -52,10 +65,13 @@ const ArticleDAO = {
    * @param {String} title - 标题 
    * @param {Array} tagIds - 标签ids
    * @returns {Promise} - Sequelize 数据库操作的结果
-   * @returns {Object} blogger 博主信息
    */
-  findOrCreateArticle (articleInfo) {
-    return ArticleModel.upsert(articleInfo)
+  findOrCreateArticle ({ articleId, content, title }) {
+    return ArticleModel.upsert({
+      articleId,
+      content,
+      title
+    })
   },
 }
 

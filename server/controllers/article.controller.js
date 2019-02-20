@@ -17,6 +17,19 @@ const ArticleContoller = {
       return res.json(resUtils.dealFail(null, '获取文章失败'))
     })
   },
+  // 获取文章列表
+  getArticleList (req, res, next) {
+    let params = req.query;
+    let { pageSize = 20, pageNo = 1 } = params
+    pageSize = parseInt(pageSize)
+    pageNo = parseInt(pageNo)
+    ArticleService.getArticleList(pageSize, pageNo).then(articles => {
+      return res.json(resUtils.dealSuccess(articles, '获取文章列表成功'))
+    }).catch(err => {
+      log.error(err);
+      return res.json(resUtils.dealFail(null, '获取文章列表失败'))
+    })
+  },
   // 保存文章
   saveArticle (req, res, next) {
     let params = req.body

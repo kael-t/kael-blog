@@ -37,10 +37,12 @@
         <el-button icon="el-icon-upload" size="medium" type="primary" :loading="articleUploading" @click="saveArticle">保存</el-button>
       </div>
     </div>
-    <side-bar>
+    <side-bar :show="true">
       <ul>
-        <li>123</li>
-        <li>456</li>
+        <li v-for="article in articleList" :key="article.articleId" @click="toDetail(article.articleId)">
+          <h4>{{article.title}}</h4>
+          <span>{{article.status}}</span>
+        </li>
       </ul>
     </side-bar>
   </div>
@@ -110,6 +112,8 @@ export default {
         PUBLISH: 1
       },
 
+      articleList: []
+
       // tags: [{tagId: 1, tagName: 'node'}, {tagId: 2, tagName: 'javascript'}]
     }
   },
@@ -119,10 +123,21 @@ export default {
     }
   },
   mounted() {
+    this.$store.dispatch('article/GET_ARTICLE_LIST').then(data => {
+      if (data.code === 0) {
+        this.articleList = data.rows
+      }
+    })
+
     if (this.$route.params.id) {
       let id = this.$route.params.id
       this.$store.dispatch('article/GET_ARTICLE_DETAIL', {articleId: id}).then((data) => {
-        this.article = data.data
+        if (data.code === 0 && data.data) {
+          this.article = data.data
+        } else {
+          // 新的api,采用replaceState可以实现修改url但不刷新页面
+          history.replaceState(null, null, '/admin/article')
+        }
       })
     }
   },
@@ -164,6 +179,9 @@ export default {
         })
       }
       this.label = '';
+    },
+    toDetail (articleId) {
+      this.$router.replace(`/admin/article/${articleId}`)
     }
   }
 }
