@@ -55,7 +55,7 @@ export default {
     this.$store.dispatch('blogger/GET_BLOGGER_INFO').then(res => {
       if (res.code === 0) {
         let data = res.bloggerInfo
-        data.aboutMe = this.html2text(data.aboutMe)
+        data.aboutMe = data.aboutMe && this.html2text(data.aboutMe)
         this.blogger = data
       }
     })
