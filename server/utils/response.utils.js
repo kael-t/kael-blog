@@ -120,7 +120,7 @@ const utils = {
   checkLackParams (params = {}, arr = []) {
     if (arr.length === 0) return
     for (let i in arr) {
-      if (!params[arr[i]]) {
+      if (params[arr[i]] === null || params[arr[i]] === undefined) {
         return this.dealLackParam(arr[i])
       }
     }
